@@ -7,12 +7,14 @@ Este archivo contiene las preguntas que se van a realizar en el laboratorio.
 Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preguntas.
 
 """
-import pandas as pd
+def upload_data():
+    import pandas as pd
 
-tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
-tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
-tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
-
+    tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
+    tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
+    tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
+    
+    return [tbl0,tbl1,tbl2]
 
 def pregunta_01():
     """
@@ -22,7 +24,9 @@ def pregunta_01():
     40
 
     """
-    return
+    data_set = upload_data()
+    
+    return data_set[0].shape[0]
 
 
 def pregunta_02():
@@ -33,7 +37,11 @@ def pregunta_02():
     4
 
     """
-    return
+    
+    data_set = upload_data()
+    
+    
+    return data_set[0].shape[1]
 
 
 def pregunta_03():
@@ -50,7 +58,14 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
+    data_set = upload_data()
+    
+    data = data_set[0]
+    data = data[["_c1"]]
+    data = data.value_counts()
+    data = data.sort_index()
+    
+    return data
 
 
 def pregunta_04():
