@@ -7,12 +7,18 @@ Este archivo contiene las preguntas que se van a realizar en el laboratorio.
 Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preguntas.
 
 """
-import pandas as pd
 
-tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
-tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
-tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
+from operator import index
 
+
+def upload_data():
+    import pandas as pd
+
+    tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
+    tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
+    tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
+    
+    return [tbl0,tbl1,tbl2]
 
 def pregunta_01():
     """
@@ -22,7 +28,9 @@ def pregunta_01():
     40
 
     """
-    return
+    data_set = upload_data()
+    
+    return data_set[0].shape[0]
 
 
 def pregunta_02():
@@ -33,7 +41,11 @@ def pregunta_02():
     4
 
     """
-    return
+    
+    data_set = upload_data()
+    
+    
+    return data_set[0].shape[1]
 
 
 def pregunta_03():
@@ -50,8 +62,16 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
-
+    import pandas as pd
+    
+    data_set = upload_data()
+    
+    
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = data["_c1"]
+    data = data.groupby(level=0).count()
+    return data
 
 def pregunta_04():
     """
@@ -65,8 +85,14 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
-
+    import pandas as pd
+    
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    data = data.groupby(["_c1"])["_c2"].mean()
+    return data
 
 def pregunta_05():
     """
@@ -82,20 +108,30 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    data = data.groupby(["_c1"])["_c2"].max()
+    return data
 
 def pregunta_06():
     """
-    Retorne una lista con los valores unicos de la columna _c4 de del archivo `tbl1.csv`
+    Retorne una lista con los valores unicos de la column8a _c4 de del archivo `tbl1.csv`
     en mayusculas y ordenados alfabéticamente.
 
     Rta/
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return
-
+    import pandas as pd
+    
+    data_set = upload_data()
+    
+    data = data_set[1]
+    data = data["_c4"].sort_values().str.upper().unique().tolist()
+    return data
 
 def pregunta_07():
     """
@@ -110,8 +146,13 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    data = data.groupby(["_c1"])["_c2"].sum()
+    return data
 
 def pregunta_08():
     """
@@ -128,8 +169,11 @@ def pregunta_08():
     39   39   E    5  1998-01-26    44
 
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data["suma"] = data["_c0"] + data["_c2"]
+    return data
 
 def pregunta_09():
     """
