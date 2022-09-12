@@ -7,6 +7,10 @@ Este archivo contiene las preguntas que se van a realizar en el laboratorio.
 Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preguntas.
 
 """
+
+from operator import index
+
+
 def upload_data():
     import pandas as pd
 
@@ -58,12 +62,16 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
+    import pandas as pd
+    
     data_set = upload_data()
     
+    
     data = data_set[0]
-    data = data[["_c1"]]
-    data = data.value_counts()
-    data = data.sort_index()
+    # data = data["_c1"]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1"])
+    data = data.groupby(level=0).count()
     
     return data
 
@@ -80,8 +88,13 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    
+    return 0
 
 def pregunta_05():
     """
