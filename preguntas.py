@@ -118,15 +118,20 @@ def pregunta_05():
 
 def pregunta_06():
     """
-    Retorne una lista con los valores unicos de la columna _c4 de del archivo `tbl1.csv`
+    Retorne una lista con los valores unicos de la column8a _c4 de del archivo `tbl1.csv`
     en mayusculas y ordenados alfabéticamente.
 
     Rta/
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return
-
+    import pandas as pd
+    
+    data_set = upload_data()
+    
+    data = data_set[1]
+    data = data["_c4"].sort_values().str.upper().unique().tolist()
+    return data
 
 def pregunta_07():
     """
@@ -141,8 +146,13 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    data = data.groupby(["_c1"])["_c2"].sum()
+    return data
 
 def pregunta_08():
     """
@@ -159,8 +169,11 @@ def pregunta_08():
     39   39   E    5  1998-01-26    44
 
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data["suma"] = data["_c0"] + data["_c2"]
+    return data
 
 def pregunta_09():
     """
