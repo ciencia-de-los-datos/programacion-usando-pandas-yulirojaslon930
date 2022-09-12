@@ -68,13 +68,10 @@ def pregunta_03():
     
     
     data = data_set[0]
-    # data = data["_c1"]
     data = data.set_index(pd.Index(data["_c1"].values))
-    data = pd.DataFrame(data,columns=["_c1"])
+    data = data["_c1"]
     data = data.groupby(level=0).count()
-    
     return data
-
 
 def pregunta_04():
     """
@@ -89,12 +86,13 @@ def pregunta_04():
     Name: _c2, dtype: float64
     """
     import pandas as pd
+    
     data_set = upload_data()
     data = data_set[0]
     data = data.set_index(pd.Index(data["_c1"].values))
     data = pd.DataFrame(data,columns=["_c1","_c2"])
-    
-    return 0
+    data = data.groupby(["_c1"])["_c2"].mean()
+    return data
 
 def pregunta_05():
     """
@@ -110,8 +108,13 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    data = data.groupby(["_c1"])["_c2"].max()
+    return data
 
 def pregunta_06():
     """
