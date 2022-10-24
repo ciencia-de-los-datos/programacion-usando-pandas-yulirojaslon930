@@ -7,12 +7,26 @@ Este archivo contiene las preguntas que se van a realizar en el laboratorio.
 Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preguntas.
 
 """
+
+from cmath import nan
+from operator import index
+from optparse import Values
 import pandas as pd
 
 tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
 tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
 tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
 
+
+
+def upload_data():
+    import pandas as pd
+
+    tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
+    tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
+    tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
+    
+    return [tbl0,tbl1,tbl2]
 
 def pregunta_01():
     """
@@ -22,7 +36,9 @@ def pregunta_01():
     40
 
     """
-    return
+    data_set = upload_data()
+    
+    return data_set[0].shape[0]
 
 
 def pregunta_02():
@@ -33,7 +49,11 @@ def pregunta_02():
     4
 
     """
-    return
+    
+    data_set = upload_data()
+    
+    
+    return data_set[0].shape[1]
 
 
 def pregunta_03():
@@ -50,8 +70,16 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
-
+    import pandas as pd
+    
+    data_set = upload_data()
+    
+    
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = data["_c1"]
+    data = data.groupby(level=0).count()
+    return data
 
 def pregunta_04():
     """
@@ -65,8 +93,14 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
-
+    import pandas as pd
+    
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    data = data.groupby(["_c1"])["_c2"].mean()
+    return data
 
 def pregunta_05():
     """
@@ -82,20 +116,30 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    data = data.groupby(["_c1"])["_c2"].max()
+    return data
 
 def pregunta_06():
     """
-    Retorne una lista con los valores unicos de la columna _c4 de del archivo `tbl1.csv`
+    Retorne una lista con los valores unicos de la column8a _c4 de del archivo `tbl1.csv`
     en mayusculas y ordenados alfabéticamente.
 
     Rta/
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return
-
+    import pandas as pd
+    
+    data_set = upload_data()
+    
+    data = data_set[1]
+    data = data["_c4"].sort_values().str.upper().unique().tolist()
+    return data
 
 def pregunta_07():
     """
@@ -110,8 +154,13 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    return
-
+    import pandas as pd
+    data_set = upload_data()
+    data = data_set[0]
+    data = data.set_index(pd.Index(data["_c1"].values))
+    data = pd.DataFrame(data,columns=["_c1","_c2"])
+    data = data.groupby(["_c1"])["_c2"].sum()
+    return data
 
 def pregunta_08():
     """
@@ -128,8 +177,10 @@ def pregunta_08():
     39   39   E    5  1998-01-26    44
 
     """
-    return
-
+    data_set = upload_data()
+    data = data_set[0]
+    data["suma"] = data["_c0"] + data["_c2"]
+    return data
 
 def pregunta_09():
     """
@@ -146,8 +197,13 @@ def pregunta_09():
     39   39   E    5  1998-01-26  1998
 
     """
-    return
-
+    import pandas as pd
+    import datetime as dt
+    data_set = upload_data()
+    data = data_set[0]
+    data["year"]= data["_c3"].apply(lambda x : x[:4])
+    
+    return data
 
 def pregunta_10():
     """
@@ -163,7 +219,16 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    return
+    df=tbl0.copy()[["_c1","_c2"]]
+
+    df=pd.pivot_table(df,
+        values="_c2",
+        index=["_c1"],
+        aggfunc=lambda x : ':'.join(str(v) for v in sorted(x)),
+    )
+    return df 
+    
+
 
 
 def pregunta_11():
@@ -182,10 +247,33 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return
-
+    import pandas as pd
+    
+    data_set = upload_data()
+    data = data_set[1]
+    values = data["_c0"].unique().tolist()
+    values = sorted(values)
+    dic = {}
+    datos = data.pivot(columns = '_c0',values = '_c4')
+    for val in values:
+        lista =[]
+        for i in datos [val].dropna():
+            lista.append(i)
+        lista = sorted(lista)
+        print(lista)
+        lista = ",".join(map(str,lista))
+        dic[val]= lista
+    df = pd.DataFrame([[key,dic[key]] for key in dic.keys()],
+    columns=['_c0','_c4'])
+    return df
 
 def pregunta_12():
+    
+    df = tbl2.copy().astype(str)
+    df["_c5"]=df["_c5a"]+":"+df["_c5b"]
+    df=df[["_c0","_c5"]]
+    df["_c5"]=df.groupby("_c0",as_index=False)["_c5"].transform(lambda x : ','.join(sorted(x)))
+    df = df.drop_duplicates()
     """
     Construya una tabla que contenga _c0 y una lista separada por ',' de los valores de
     la columna _c5a y _c5b (unidos por ':') de la tabla `tbl2.tsv`.
@@ -200,10 +288,15 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
+    return df
 
 
 def pregunta_13():
+    
+    df= tbl0.copy()
+    df=df.join(tbl2.set_index('_c0'), on='_c0')
+    df=df.groupby(["_c1"]).sum()["_c5b"]
+    
     """
     Si la columna _c0 es la clave en los archivos `tbl0.tsv` y `tbl2.tsv`, compute la
     suma de tbl2._c5b por cada valor en tbl0._c1.
@@ -217,4 +310,4 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    return
+    return df
