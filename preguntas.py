@@ -219,24 +219,16 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    import pandas as pd
+    df=tbl0.copy()[["_c1","_c2"]]
+
+    df=pd.pivot_table(df,
+        values="_c2",
+        index=["_c1"],
+        aggfunc=lambda x : ':'.join(str(v) for v in sorted(x)),
+    )
+    return df 
     
-    data_set = upload_data()
-    data = data_set[0]
-    values = data["_c1"].unique().tolist()
-    values = sorted(values)
-    dic = {}
-    datos = data.pivot(columns = '_c1',values = '_c2')
-    for val in values:
-        lista =[]
-        for i in datos [val].dropna():
-            lista.append(int(i))
-        lista = sorted(lista)
-        lista = ":".join(map(str,lista))
-        dic[val]= lista
-    df = pd.DataFrame([[key,dic[key]] for key in dic.keys()],
-    columns=['_c0','_c1'])
-    return df
+
 
 
 def pregunta_11():
